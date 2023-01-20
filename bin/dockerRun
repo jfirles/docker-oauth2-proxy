@@ -1,0 +1,21 @@
+#!/bin/bash
+
+## cogemos los valores del Dockerfile
+PROJECT_NAME=$(cat Dockerfile | grep "com.siptize.project" | awk -F"\"" '{print $4}')
+APP_NAME=$(cat Dockerfile | grep "com.siptize.app" | awk -F"\"" '{print $4}')
+VERSION=$(cat Dockerfile | grep "LABEL version" | awk -F"\"" '{print $2}')
+
+### valores auto seteados
+IMAGE_NAME=$APP_NAME
+CONTAINER_NAME=$PROJECT_NAME-$APP_NAME-devel
+
+DOCKER_ENV_FILE=docker_file.env
+
+if [ ! -f $DOCKER_ENV_FILE ];then
+	echo "Error: The file $DOCKER_ENV_FILE does not exists, please create it with the environment variables"
+	exit 1
+fi
+
+### ejecucion
+docker run --rm --name $CONTAINER_NAME --env-file $DOCKER_ENV_FILE --network host -it josefu/$IMAGE_NAME:$VERSION
+
