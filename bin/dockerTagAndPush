@@ -1,0 +1,24 @@
+#!/bin/bash
+
+## cogemos los valores del Dockerfile
+APP_NAME=$(cat Dockerfile | grep "com.siptize.app" | awk -F"\"" '{print $4}')
+VERSION=$(cat Dockerfile | grep "LABEL version" | awk -F"\"" '{print $2}')
+
+## nombre con la version
+LOCAL_IMAGE=josefu/$APP_NAME:$VERSION
+
+## nombre en el registry
+REGISTRY_IMAGE_NAME=josefu/$APP_NAME:$VERSION
+
+## tageamos
+docker tag $LOCAL_IMAGE $REGISTRY_IMAGE_NAME
+
+## hacemos el push
+echo "Hacer el push de la imagen $REGISTRY_IMAGE_NAME? y/n"
+read YESNO
+
+if [ "$YESNO" == "y" ];then
+        docker push $REGISTRY_IMAGE_NAME
+else
+        echo "Cancelado el push."
+fi
