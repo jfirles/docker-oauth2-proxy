@@ -1,0 +1,9 @@
+#!/bin/bash
+
+## cogemos los valores del Dockerfile
+APP_NAME=$(cat Dockerfile | grep "com.siptize.app" | awk -F"\"" '{print $4}')
+VERSION=$(cat Dockerfile | grep "LABEL version" | awk -F"\"" '{print $2}')
+
+
+## construimos la imagen
+docker build . -t josefu/$APP_NAME:$VERSION
